@@ -1,5 +1,6 @@
 $(function(){
 
+	$("#status").hide(0);
 	//建立、開啟資料庫
 	var db;
 	var dbSize = 2 * 1024 * 1024;
@@ -17,6 +18,20 @@ $(function(){
 
 	//顯示列表
 	showAllNotes();
+
+	//若記事列表很長，往下捲超過一定範圍時會出現浮動按鈕可回到最上方 ＋
+	$("#gotop").click(function(){
+		$("html,body").animate({scrollTop:0},1000);
+	});
+
+	$(window).scroll(function() {
+		if($(this).scrollTop() > 300) {
+			$("#gotop").fadeIn("fast");
+		} else {
+			$("#gotop").stop().fadeOut("fast"); //先將前面fadein的效果停止，然後執弄fadeout
+        }
+    });
+    //若記事列表很長，往下捲超過一定範圍時會出現浮動按鈕可回到最上方 -
 
 	function showAllNotes() {
 		$("#event_list").empty();
@@ -84,9 +99,8 @@ $(function(){
 		db.transaction(function(tx) {	    
 			tx.executeSql("insert into mynotes(title, details, last_date) values(?, ?, datetime('now', 'localtime'))", [title_info, details_info], 
 				function(tx, result) {
-					//alert("儲存成功!");
 					$("#addNote").dialog("close");
-					//$("#status").html("儲存成功!");
+					$("#status").html("儲存成功!").show(0).delay(3000).hide(0); //顯示出“儲存成功”訊息三秒後消失
 
 					showAllNotes();//顯示列表
 					

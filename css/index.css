@@ -6,3 +6,28 @@
 	top:35px;
 	margin: 0 10px;
 }
+
+#status{
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+}
+
+#header_description{
+	text-align: center;
+	height: 40px;
+	line-height: 40px;
+}
+
+#gotop {
+    display: none;
+    position: fixed;
+    right: 30px;
+    bottom: 20px;
+    padding: 10px 15px;
+    font-size: 20px;
+    background: #777;
+    color: white;
+    cursor: pointer;
+}
+
