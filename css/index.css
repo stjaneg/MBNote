@@ -1,0 +1,8 @@
+.class_del {
+	float:right;
+	position:relative;
+	display:block;
+	z-index:10;
+	top:35px;
+	margin: 0 10px;
+}

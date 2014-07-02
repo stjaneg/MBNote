@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>MB Note</title>
+		<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+		<meta name="viewport" content="width=device=width, initial-scale=1" /> <!-- 讓畫面調整成適當寬度，就不會看起來非常小 -->
+		<!--引用jQuery Mobile函式庫 B -->
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+		<!--引用jQuery Mobile函式庫 E -->
+
+		<link rel="stylesheet" type="text/css" href="../css/index.css" />
+		<script type="text/JavaScript" src="../js/index.js"></script>
+		<!--
+		<script type="text/javascript">
+			$(function(){
+				$("#btn_add").on("click",addNote);
+
+				function addNote() {
+					alert("you click add button!");
+				}
+			});
+		</script>
+		-->
+	</head>
+	<body>
+		<!--首頁 記事列表-->
+		<div data-role="page" id="home" data-title="MB's Note" >
+			<div data-role="header" id="id_header_home">
+				<a href="#" id="btn_del" data-role="button" data-icon="delete" data-iconpos="notext"></a>
+				<h1>記事</h1>
+				<a href="#" id="btn_add" data-role="button" data-icon="plus" data-iconpos="notext"></a>
+			</div>
+			
+			<div data-role="content" class="content">
+				<ul id="event_list" data-role="listview" data-filter="true" data-filter-placeholder="搜尋記事"></ul>				
+			</div>
+			
+
+		</div>
+		
+		<!--新增記事-->
+		<div data-role="dialog" id="addNote">
+			<div data-role="header">
+			<h1>新的記事</h1>
+			</div>
+			
+			<div data-role="content">
+				<input type="text" id="noteTitle" value="輸入主旨" />
+				<textarea id="noteDetails" cols="40" rows="8">輸入詳細內容</textarea>
+				<hr>
+				<a href="#" data-role="button" id="btn_saveNote">存檔</a>
+			</div>
+		</div>
+
+
+	</body>
+</html>
