@@ -28,7 +28,7 @@ $(function(){
 		if($(this).scrollTop() > 300) {
 			$("#gotop").fadeIn("fast");
 		} else {
-			$("#gotop").stop().fadeOut("fast"); //先將前面fadein的效果停止，然後執弄fadeout
+			//$("#gotop").stop().fadeOut("fast"); //先將前面fadein的效果停止，然後執弄fadeout -->失敗了，先mark掉
         }
     });
     //若記事列表很長，往下捲超過一定範圍時會出現浮動按鈕可回到最上方 -
@@ -72,23 +72,71 @@ $(function(){
 	}
 	
 	function showDelBtn() {
-		//$("a.del_btn").show();
-		if($(".class_del").length<=0) {
-			//$("<button class='class_del_btn'>Delete</button>");
-			//$("<a href='#' class='ui-btn ui-shadow ui-corner-all ui-icon-delete ui-btn-icon-notext class_del_btn'>delete</a>");
+		//if($(".class_del").length <=0 ) { //若刪除用的checkbox已出現過，就不再出現
+		// + 按鈕變成 x 按鈕
+		if($("li:visible").length > 0) {
+			$("#btn_add").attr("data-icon", "delete").addClass("ui-icon-" + "delete").removeClass("ui-icon-" + "plus");
+			$("#btn_add").off("click"); //解除click事件綁定的所有方法
+			$("#btn_add").on("click", deleteNote);
+
+			// - 按鈕變成 <- 按鈕
+			$("#btn_del").attr("data-icon", "back").addClass("ui-icon-" + "back").removeClass("ui-icon-" + "minus");
+			$("#btn_del").off("click");
+			$("#btn_del").on("click", revertShowDelBtn);
+
+			//出現chekcbox
 			var deleteButton = $("<input type='checkbox' name='del_checkbox' class='class_del' />");
 			$("li:visible").before(deleteButton);
+		} else {
+			alert("您目前沒有任何記事項目，可點擊右上角的按鈕 ＋ 新增記事！");
+		}
+		//}
+	}
 
-			/*
-			$("#btn_add").remove();
-			var okButton = $("<button>ok</button>");
-			$("#id_header_home").append(okButton);
-			*/
-		}		
+	function revertShowDelBtn() {
+		//復原 ＋ 按鈕
+		$("#btn_add").attr("data-icon", "plus").addClass("ui-icon-" + "plus").removeClass("ui-icon-" + "delete");
+		$("#btn_add").off("click");
+		$("#btn_add").on("click", addNote);
+
+		//復原 - 按鈕
+		$("#btn_del").attr("data-icon", "minus").addClass("ui-icon-" + "minus").removeClass("ui-icon-" + "back");
+		$("#btn_del").off("click");
+		$("#btn_del").on("click", showDelBtn);
+
+		//刪掉checkbox
+		$(".class_del").remove();
 	}
 	
 	function deleteNote() {
-		alert("you click del button!");
+		var checknumber = $("input[name='del_checkbox']:checked").length; //或者這樣寫  $(".class_del:checked").length;
+
+		if (checknumber<=0) {
+			alert("請勾選欲刪除項目!");
+		} else {
+			//alert("被選數：" + checknumber);
+
+			if (confirm("您確定要刪除這" + checknumber +"個項目? （刪除後無法復原）")) {  //若user按下確定，confirm會回傳true；取消則回傳false
+				$("input[name='del_checkbox']:checked").each(function(i) {
+					var deleteId = $(this).next("li").attr("id");
+
+					//alert(deleteId);
+
+					db.transaction(function(tx) {
+						tx.executeSql("delete from mynotes where id=?", [deleteId],
+							function(tx, result) {
+							},
+							function(e) {
+								alert("第" + i + "個項目刪除失敗: " + e.message);
+							}
+						);
+					});
+				});
+
+				revertShowDelBtn();
+				showAllNotes();//顯示列表
+			}
+		}
 	}
 	
 	function saveNote() {
@@ -111,8 +159,4 @@ $(function(){
 			);
 		});
 	}
-	
-	
-
-
 });
