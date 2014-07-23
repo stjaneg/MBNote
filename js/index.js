@@ -5,16 +5,17 @@ $(function(){
 	var db;
 	var dbSize = 2 * 1024 * 1024;
 	db = openDatabase("todo", "", "", dbSize);
-
+	
 	//建立資料表
 	db.transaction(function(tx) {
 		tx.executeSql("create table if not exists mynotes(id integer PRIMARY KEY, title char(50), details text, last_date datetime)");
 	});
-
+	
 	//綁定事件
 	$("#btn_add").on("click", addNote);
 	$("#btn_del").on("click", showDelBtn);
 	$("#btn_saveNote").on("click", saveNote);
+	$("#img1").on("click", swipetodelete);
 
 	//顯示列表
 	showAllNotes();
@@ -36,13 +37,13 @@ $(function(){
 	function showAllNotes() {
 		$("#event_list").empty();
 		var notes = "";
-
+		
 		//query出所有的記事
 		/*
 		<li id="1">
 			<a href="#">
 				<h3>title</h3>
-				<p>details</p>
+				<p>details</p>					
 			</a>
 		</li>
 		*/
@@ -64,31 +65,40 @@ $(function(){
 				}
 			);
 		});
-	}
+		/*
+		$(".li_item").on("tap", function(){
+			alert("tap！");
+		});
+		*/
+		$("#img1").click();
+		/*
+		$("#img1").on("tap", function(){
+			alert("img1 tap！");
+		});
+		*/
 
+	}
+		
 	function addNote() {
 		$.mobile.changePage("#addNote", {}); //叫出新增記事頁面
 	}
-
+	
 	function showDelBtn() {
 		//if($(".class_del").length <=0 ) { //若刪除用的checkbox已出現過，就不再出現
 		// + 按鈕變成 x 按鈕
-		if($("li:visible").length > 0) {
-			$("#btn_add").attr("data-icon", "delete").addClass("ui-icon-" + "delete").removeClass("ui-icon-" + "plus");
-			$("#btn_add").off("click"); //解除click事件綁定的所有方法
-			$("#btn_add").on("click", deleteNote);
+		$("#btn_add").attr("data-icon", "delete").addClass("ui-icon-" + "delete").removeClass("ui-icon-" + "plus");
+		$("#btn_add").off("click"); //解除click事件綁定的所有方法
+		$("#btn_add").on("click", deleteNote);
 
-			// - 按鈕變成 <- 按鈕
-			$("#btn_del").attr("data-icon", "back").addClass("ui-icon-" + "back").removeClass("ui-icon-" + "minus");
-			$("#btn_del").off("click");
-			$("#btn_del").on("click", revertShowDelBtn);
+		// - 按鈕變成 <- 按鈕
+		$("#btn_del").attr("data-icon", "back").addClass("ui-icon-" + "back").removeClass("ui-icon-" + "minus");
+		$("#btn_del").off("click");
+		$("#btn_del").on("click", revertShowDelBtn);
 
-			//出現chekcbox
-			var deleteButton = $("<input type='checkbox' name='del_checkbox' class='class_del' />");
-			$("li:visible").before(deleteButton);
-		} else {
-			alert("您目前沒有任何記事項目，可點擊右上角的按鈕 ＋ 新增記事！");
-		}
+		//出現chekcbox
+		var deleteButton = $("<input type='checkbox' name='del_checkbox' class='class_del' />");
+		$("li:visible").before(deleteButton);
+
 		//}
 	}
 
@@ -106,7 +116,7 @@ $(function(){
 		//刪掉checkbox
 		$(".class_del").remove();
 	}
-
+	
 	function deleteNote() {
 		var checknumber = $("input[name='del_checkbox']:checked").length; //或者這樣寫  $(".class_del:checked").length;
 
@@ -137,25 +147,31 @@ $(function(){
 			}
 		}
 	}
-
+	
 	function saveNote() {
 		var title_info = $("#noteTitle").val();
 		var details_info = $("#noteDetails").val();
 
 		//新增資料列
-		db.transaction(function(tx) {
+		db.transaction(function(tx) {	    
 			tx.executeSql("insert into mynotes(title, details, last_date) values(?, ?, datetime('now', 'localtime'))", [title_info, details_info], 
 				function(tx, result) {
 					$("#addNote").dialog("close");
 					$("#status").html("儲存成功!").show(0).delay(3000).hide(0); //顯示出“儲存成功”訊息三秒後消失
 
 					showAllNotes();//顯示列表
-
+					
 				},
 				function(e) {
 					alert("新增資料失敗:" + e.message);
 				}
 			);
+		});
+	}
+	
+	function swipetodelete() {
+		$("li:visible").on("tap", function(){
+			alert("swipetodelete li tap！");
 		});
 	}
 });
