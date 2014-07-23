@@ -20,6 +20,9 @@ $(function(){
 	//顯示列表
 	showAllNotes();
 
+	$('#event_list').on('tap', 'li', function() {
+        alert("tap"); // id of clicked li by directly accessing DOMElement property
+    });
 	//若記事列表很長，往下捲超過一定範圍時會出現浮動按鈕可回到最上方 ＋
 	$("#gotop").click(function(){
 		$("html,body").animate({scrollTop:0},1000);
@@ -70,7 +73,7 @@ $(function(){
 			alert("tap！");
 		});
 		*/
-		$("#img1").click();
+		//$("#img1").click();
 		/*
 		$("#img1").on("tap", function(){
 			alert("img1 tap！");
